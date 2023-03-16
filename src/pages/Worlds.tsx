@@ -3,6 +3,7 @@ import solarsystem from './solarsystem.png'
 import star from './Star.png'
 import moon from './Moon.png'
 import './world.css'
+
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
@@ -20,7 +21,7 @@ const Worlds = (props: WorldsProps): JSX.Element => {
   const navigate = useNavigate()
 
   const [progress, setProgress] = useState<Progress>({
-    profile: profile.id,
+    profile: 0,
     //! need to be able to add level and world id to this form
     level: 0,
     world: 0,
@@ -30,11 +31,20 @@ const Worlds = (props: WorldsProps): JSX.Element => {
   })
 
   //! once start button is implemented we'll set an onClick for that element to trigger the below function
-  const handleLevelStart = async (evt: React.FormEvent): Promise<void> => {
+  const handleLevelStart = async (evt:any): Promise<void> => {
     evt.preventDefault()
     try {
-      await progressService.createProgress(progress)
-      navigate('/level1')
+      function handleSet(evt:any){
+        setProgress({
+          profile: user!.profile.id,
+          level: evt.target.id,
+          world: evt.target.id,
+          levelCompleted: false,
+        })
+      }
+      console.log("progress within handleLevelStart", progress)
+      const progressRecord = await progressService.createProgress(progress)
+      navigate('/level1',  { state: { progressRecord: progressRecord } })
     } catch (err) {
       console.log(err)
     }
@@ -48,8 +58,9 @@ const Worlds = (props: WorldsProps): JSX.Element => {
       <div onClick={(e) => console.log('hi')} className='bg-transparent w-4 h-4 z-10 top-[18rem] scale-[6] left-[21rem] rounded-xl absolute'></div>
       <div onClick={(e) => console.log('hi')} className='bg-transparent w-4 h-4 z-10 top-[27rem] scale-[7.2] left-[17.3rem] rounded-xl absolute'></div>
       <div onClick={(e) => console.log('hi')} className='bg-transparent w-4 h-4 z-10 top-[33rem] scale-[5] left-[9.3rem] rounded-xl absolute'></div>
-      <div onClick={(e) => console.log('hi')} className='bg-transparent w-4 h-4 z-10 top-[42rem] left-[4.5rem] scale-[5] rounded-xl absolute'></div>
-      <div onClick={(e) => console.log('hi')} className='w-screen h-screen flex overflow-clip' id="world">
+      {/* first world div */}
+      <div onClick={handleLevelStart} className='bg-transparent w-4 h-4 z-10 top-[42rem] left-[4.5rem] scale-[5] rounded-xl absolute' id="1" ></div>
+      <div onClick={handleLevelStart} className='w-screen h-screen flex overflow-clip' id="world">
         <div className='flex fixed w-screen justify-between p-5 top-1'>
           <div className="bg-gray-800 flex gap-1 rounded-xl w-16 p-1">
             <img src={star} />

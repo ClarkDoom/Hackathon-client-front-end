@@ -2,6 +2,8 @@ import { useEffect, useState, MouseEvent } from "react";
 import { NavLink } from "react-router-dom";
 import { User } from "../../types/models";
 import "./Levels.css";
+import { useLocation } from "react-router";
+import * as progressService from '../../Services/progressService'
 
 import Rocket from "./Rocket";
 interface LevelProps {
@@ -47,9 +49,15 @@ const Level1 = (props: LevelProps): JSX.Element => {
     useEffect(() => {
         if (completed == 5) {
             // FETCH TO CREATE THE LEVEL COMPLETED ?
-            console.log("pushing data");
+            progressService.updateProgress( {levelCompleted: true}, progressRecord.id)
         }
     }, [completed]);
+
+    // brandon workspace
+    const location = useLocation()
+    const progressRecord = location.state.progressRecord
+    console.log(progressRecord)
+
     if (completed == 5) {
         return (
             <div
